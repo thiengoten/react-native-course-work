@@ -69,7 +69,7 @@ const AddScreen = () => {
     const hike = {
       name,
       location,
-      date: date.toLocaleDateString(),
+      date: date.toISOString(),
       distance,
       is_Parking: selectedId,
       difficulty: value,

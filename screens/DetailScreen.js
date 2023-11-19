@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   SafeAreaView,
   StyleSheet,
@@ -12,12 +13,13 @@ import DropDownPicker from 'react-native-dropdown-picker'
 import RadioGroup from 'react-native-radio-buttons-group'
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 import Database from '../Database'
+
 const DetailScreen = ({ route }) => {
   const { hike } = route.params
 
   const [name, setName] = useState(hike.name)
   const [location, setLocation] = useState(hike.location)
-  const [date, setDate] = useState(hike.date)
+  const [date, setDate] = useState(new Date(hike.date))
   const [distance, setDistance] = useState(hike.distance)
   const [description, setDescription] = useState(hike.description)
   const [open, setOpen] = useState(false)
@@ -48,7 +50,7 @@ const DetailScreen = ({ route }) => {
   useEffect(() => {
     setName(hike.name)
     setLocation(hike.location)
-    setDate(hike.date)
+    setDate(new Date(hike.date))
     setDistance(hike.distance)
     setDescription(hike.description)
     setValue(hike.difficulty)
@@ -59,7 +61,7 @@ const DetailScreen = ({ route }) => {
     const hikeUpdate = {
       name,
       location,
-      date,
+      date: date.toISOString(),
       distance,
       description,
       is_Parking: selectedId,
@@ -67,6 +69,7 @@ const DetailScreen = ({ route }) => {
       id: hike.id,
     }
     await Database.updateHike(hikeUpdate)
+    Alert.alert('Success', 'Hike updated successfully.')
   }
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate
@@ -100,7 +103,10 @@ const DetailScreen = ({ route }) => {
       />
       <Text style={styles.label}>Date:</Text>
       <SafeAreaView>
-        <Button onPress={showDatepicker} title={date} />
+        <Button
+          onPress={showDatepicker}
+          title={date ? date.toLocaleDateString() : 'Select Date'}
+        />
       </SafeAreaView>
       <Text style={styles.label}>Distance:</Text>
       <View style={styles.inputContainer}>
